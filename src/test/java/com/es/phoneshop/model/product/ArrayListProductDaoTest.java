@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
@@ -52,5 +53,12 @@ public class ArrayListProductDaoTest {
     public void testSuccessDeleteProduct() {
         productDao.delete(4l);
         assertNull(productDao.getProduct(4l));
+    }
+
+    @Test
+    public void testSaveProductWithDifferentId(){
+        Product product = new Product(32L,"simsxg75", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg");
+        productDao.save(product);
+        assertEquals(productDao.getProduct(32l),product);
     }
 }

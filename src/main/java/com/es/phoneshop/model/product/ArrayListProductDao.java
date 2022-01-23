@@ -49,8 +49,10 @@ public class ArrayListProductDao implements ProductDao {
                 for (Product productFromList : products) {
                     if (product.getId().equals(productFromList.getId())) {
                         products.set(products.indexOf(productFromList), product);
+                        return;
                     }
                 }
+                products.add(product);
             } else {
                 product.setId(++idCounter);
                 products.add(product);
