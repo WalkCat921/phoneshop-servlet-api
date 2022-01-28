@@ -1,6 +1,11 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.model.search.SearchFilter;
+import com.es.phoneshop.model.sort.SortField;
+import com.es.phoneshop.model.sort.SortOrder;
+
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -41,19 +46,51 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void save(Product product) {
+    public List<Product> findProductsByQuery(String query) {
+        synchronized (LOCK) {
+            SearchFilter searchFilter = new SearchFilter();
+            if (query != null && !query.trim().isEmpty()) {
+                return searchFilter.getFilteredListByQuery(findProducts(), query);
+            } else {
+                return findProducts();
+            }
+        }
+    }
+
+    @Override
+    public List<Product> findProductsByQuerySortFieldAndOrder(String query, SortField sortField, SortOrder sortOrder) {
+        synchronized (LOCK) {
+            Comparator<Product> productComparator = Comparator.comparing(product -> {
+                if (sortField != null && SortField.DESCRIPTION == sortField) {
+                    return (Comparable) product.getDescription();
+                } else {
+                    return (Comparable) product.getPrice();
+                }
+            });
+            if (SortOrder.DESC == sortOrder) {
+                productComparator = productComparator.thenComparing(productComparator).reversed();
+            }
+            return findProductsByQuery(query).stream().sorted(productComparator).collect(Collectors.toList());
+        }
+    }
+
+
+    @Override
+    public void save(Product product) throws NullPointerException {
         synchronized (LOCK) {
             if (product == null) {
-                return;
+                throw new NullPointerException("Product is null");
             }
             if (product.getId() != null) {
-                for (Product productFromList : products) {
-                    if (product.getId().equals(productFromList.getId())) {
-                        products.set(products.indexOf(productFromList), product);
-                        return;
-                    }
+                try {
+                    Product productWithSameId = products.stream()
+                            .filter(p -> p.getId().equals(product.getId()))
+                            .findAny()
+                            .get();
+                    products.set(products.indexOf(productWithSameId), product);
+                } catch (NoSuchElementException ex) {
+                    products.add(product);
                 }
-                products.add(product);
             } else {
                 product.setId(++idCounter);
                 products.add(product);

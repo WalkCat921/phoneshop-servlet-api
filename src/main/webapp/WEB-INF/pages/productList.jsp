@@ -8,12 +8,24 @@
   <p>
     Welcome to Expert-Soft training!
   </p>
+  <form>
+    <input name="query" value="${param.query}">
+    <button>Search</button>
+  </form>
   <table>
     <thead>
       <tr>
         <td>Image</td>
-        <td>Description</td>
-        <td class="price">Price</td>
+        <td>
+          Description
+          <tags:sortLink sort="description" order="asc" cursor="&uArr;"/>
+          <tags:sortLink sort="description" order="desc" cursor="&dArr;"/>
+        </td>
+        <td class="price">
+            Price
+          <tags:sortLink sort="price" order="asc" cursor="&uArr;"/>
+          <tags:sortLink sort="price" order="desc" cursor="&dArr;"/>
+        </td>
       </tr>
     </thead>
     <c:forEach var="product" items="${products}">
