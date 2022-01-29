@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
 
 public class ProductListPageServlet extends HttpServlet {
 
@@ -20,7 +19,7 @@ public class ProductListPageServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        productDao = new ArrayListProductDao();
+        productDao = ArrayListProductDao.getInstance();
     }
 
     @Override
@@ -32,8 +31,8 @@ public class ProductListPageServlet extends HttpServlet {
             request.setAttribute("products", productDao.findProductsByQuery(query));
         } else {
             request.setAttribute("products", productDao.findProductsByQuerySortFieldAndOrder(query
-                    , Optional.ofNullable(sortField.toUpperCase()).map(SortField::valueOf).orElse(null)
-                    , Optional.ofNullable(sortOrder.toUpperCase()).map(SortOrder::valueOf).orElse(null)));
+                    , SortField.getSortFieldByRequestParam(sortField)
+                    , SortOrder.getSortOrderByRequestParam(sortOrder)));
         }
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }

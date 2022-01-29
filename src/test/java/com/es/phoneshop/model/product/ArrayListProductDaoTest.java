@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.Assert.assertEquals;
@@ -17,11 +18,12 @@ public class ArrayListProductDaoTest {
     private ProductDao productDao;
     private Currency usd;
 
+
     @Before
     public void setup() {
         usd = Currency.getInstance("USD");
-        productDao = new ArrayListProductDao();
-
+        productDao = ArrayListProductDao.getInstance();
+        SampleProduct.createSampleProductsArrayList(productDao);
     }
 
     @Test
@@ -64,7 +66,7 @@ public class ArrayListProductDaoTest {
 
     @Test(expected = NoSuchElementException.class)
     public void testSuccessDeleteProduct() {
-        final long ID = 4L;
+        final long ID = 6L;
         productDao.delete(ID);
         assertNull(productDao.getProduct(ID));
     }
@@ -81,5 +83,12 @@ public class ArrayListProductDaoTest {
                 "Siemens/Siemens%20SXG75.jpg");
         productDao.save(product);
         assertEquals(productDao.getProduct(32L), product);
+    }
+
+    @Test
+    public void testFindProductsByQuery() {
+        String query = "Sam";
+        List<Product> productsByQuery = productDao.findProductsByQuery(query);
+        assertFalse(productsByQuery.isEmpty());
     }
 }

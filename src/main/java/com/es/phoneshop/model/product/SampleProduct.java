@@ -7,11 +7,10 @@ public final class SampleProduct {
 
     private static final Currency USD = Currency.getInstance("USD");
 
-    public SampleProduct(ProductDao productDao) {
-        createSampleProductsArrayList(productDao);
+    public SampleProduct() {
     }
 
-    private void createSampleProductsArrayList(ProductDao productDao) {
+    public static void createSampleProductsArrayList(ProductDao productDao) {
         productDao.save(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), USD, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
         productDao.save(new Product("sgs2", "Samsung Galaxy S II", new BigDecimal(200), USD, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
         productDao.save(new Product("sgs3", "Samsung Galaxy S III", new BigDecimal(300), USD, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg"));

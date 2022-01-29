@@ -13,13 +13,26 @@ import java.util.stream.Collectors;
 public class ArrayListProductDao implements ProductDao {
 
     private final Object LOCK = new Object();
+    private static volatile ProductDao instance;
 
     private List<Product> products;
     private long idCounter;
 
-    public ArrayListProductDao() {
+    private ArrayListProductDao() {
         this.products = new ArrayList<>();
-        SampleProduct sampleProduct = new SampleProduct(this);
+    }
+
+    public static ProductDao getInstance() {
+        ProductDao localInstance = instance;
+        if (localInstance == null) {
+            synchronized (ProductDao.class) {
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new ArrayListProductDao();
+                }
+            }
+        }
+        return localInstance;
     }
 
     @Override
