@@ -17,5 +17,10 @@
   <main>
     <jsp:doBody/>
   </main>
+  <footer>
+    (c) Expert Soft Training
+    <br>
+    Developed by Egor Zhukovsky
+  </footer>
 </body>
 </html>

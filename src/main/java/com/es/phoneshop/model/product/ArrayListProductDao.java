@@ -1,11 +1,11 @@
 package com.es.phoneshop.model.product;
 
 import com.es.phoneshop.model.search.SearchFilter;
+import com.es.phoneshop.model.sort.SortComparator;
 import com.es.phoneshop.model.sort.SortField;
 import com.es.phoneshop.model.sort.SortOrder;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -36,15 +36,26 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public Product getProduct(Long id) throws NoSuchElementException {
+    public Product getProduct(Long id) throws NoSuchElementException, NullPointerException {
         synchronized (LOCK) {
             if (id == null) {
-                return null;
+                throw new NullPointerException("id is null!");
             }
             return products.stream()
                     .filter(product -> id.equals(product.getId()))
-                    .findAny()
-                    .get();
+                    .findAny().orElseThrow(() -> new NoSuchElementException("Product with ID " + id + " not found"));
+        }
+    }
+
+    @Override
+    public Product getProduct(String code) throws NoSuchElementException, NullPointerException {
+        synchronized (LOCK) {
+            if (code == null || code.isEmpty()) {
+                throw new NullPointerException("Code is null or empty");
+            }
+            return products.stream()
+                    .filter(product -> code.equals(product.getCode()))
+                    .findAny().orElseThrow(() -> new NoSuchElementException("Product with code " + code + " not found"));
         }
     }
 
@@ -73,17 +84,8 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public List<Product> findProductsByQuerySortFieldAndOrder(String query, SortField sortField, SortOrder sortOrder) {
         synchronized (LOCK) {
-            Comparator<Product> productComparator = Comparator.comparing(product -> {
-                if (sortField != null && SortField.DESCRIPTION == sortField) {
-                    return (Comparable) product.getDescription();
-                } else {
-                    return (Comparable) product.getPrice();
-                }
-            });
-            if (SortOrder.DESC == sortOrder) {
-                productComparator = productComparator.thenComparing(productComparator).reversed();
-            }
-            return findProductsByQuery(query).stream().sorted(productComparator).collect(Collectors.toList());
+            SortComparator sortComparator = new SortComparator();
+            return findProductsByQuery(query).stream().sorted(sortComparator.getSortFieldOrderComparator(sortField, sortOrder)).collect(Collectors.toList());
         }
     }
 
@@ -118,8 +120,7 @@ public class ArrayListProductDao implements ProductDao {
                 products.remove(
                         products.stream()
                                 .filter(product -> product.getId().equals(id))
-                                .findAny()
-                                .get());
+                                .findAny().orElseThrow(() -> new NoSuchElementException("Product with ID " + id + " not found to delete")));
             }
         }
     }

@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public interface ProductDao {
-    Product getProduct(Long id) throws NoSuchElementException;
+    Product getProduct(Long id) throws NoSuchElementException, NullPointerException ;
+
+    Product getProduct(String code) throws NoSuchElementException, NullPointerException ;
 
     List<Product> findProducts();
 
