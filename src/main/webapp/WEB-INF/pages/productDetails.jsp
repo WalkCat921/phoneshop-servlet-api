@@ -18,7 +18,11 @@
     <tr>
       <td>Price</td>
       <td>
-        <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+        <a href='#'
+           onclick='javascript:window.open("${pageContext.servletContext.contextPath}/price-history/${product.code}",
+              "_blank", "scrollbars=0,resizable=0,height=600,width=450,top=250,left=780");' title='Pop Up'>
+          <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+        </a>
       </td>
     </tr>
     <tr>

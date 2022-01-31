@@ -1,5 +1,7 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.model.product.price.PriceHistory;
+
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Objects;
@@ -18,6 +20,7 @@ public class Product {
     private Currency currency;
     private int stock;
     private String imageUrl;
+    private PriceHistory priceHistory;
 
     public Product() {
     }
@@ -39,6 +42,16 @@ public class Product {
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
+    }
+
+    public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl, PriceHistory priceHistory) {
+        this.code = code;
+        this.description = description;
+        this.price = price;
+        this.currency = currency;
+        this.stock = stock;
+        this.imageUrl = imageUrl;
+        this.priceHistory = priceHistory;
     }
 
     public Long getId() {
@@ -97,22 +110,12 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return stock == product.stock && Objects.equals(id, product.id)
-                && Objects.equals(code, product.code)
-                && Objects.equals(description, product.description)
-                && Objects.equals(price, product.price)
-                && Objects.equals(currency, product.currency)
-                && Objects.equals(imageUrl, product.imageUrl);
+    public PriceHistory getPriceHistory() {
+        return priceHistory;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, code, description, price, currency, stock, imageUrl);
+    public void setPriceHistory(PriceHistory priceHistory) {
+        this.priceHistory = priceHistory;
     }
 
     @Override
@@ -125,6 +128,27 @@ public class Product {
                 ", currency=" + currency +
                 ", stock=" + stock +
                 ", imageUrl='" + imageUrl + '\'' +
+                ", priceHistory=" + priceHistory +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return stock == product.stock
+                && Objects.equals(id, product.id)
+                && Objects.equals(code, product.code)
+                && Objects.equals(description, product.description)
+                && Objects.equals(price, product.price)
+                && Objects.equals(currency, product.currency)
+                && Objects.equals(imageUrl, product.imageUrl)
+                && Objects.equals(priceHistory, product.priceHistory);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, code, description, price, currency, stock, imageUrl, priceHistory);
     }
 }

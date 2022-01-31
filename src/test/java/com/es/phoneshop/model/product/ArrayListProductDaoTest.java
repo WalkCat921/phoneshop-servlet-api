@@ -34,13 +34,16 @@ public class ArrayListProductDaoTest {
     @Test
     public void testGetProductNotNull() {
         final long ID = 4L;
+
         assertNotNull(productDao.getProduct(ID));
     }
 
     @Test
     public void testGetProductsEquals() {
         final long ID = 9L;
+
         Product product = productDao.getProduct(ID);
+
         assertEquals("nokia3310", product.getCode());
     }
 
@@ -60,14 +63,18 @@ public class ArrayListProductDaoTest {
                 , 30
                 , "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/" +
                 "Siemens/Siemens%20C61.jpg");
+
         productDao.save(newProductWithSameId);
+
         assertNotEquals(productFromList, productDao.getProduct(12L));
     }
 
     @Test(expected = NoSuchElementException.class)
     public void testSuccessDeleteProduct() {
         final long ID = 6L;
+
         productDao.delete(ID);
+
         assertNull(productDao.getProduct(ID));
     }
 
@@ -81,14 +88,35 @@ public class ArrayListProductDaoTest {
                 , 40
                 , "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/" +
                 "Siemens/Siemens%20SXG75.jpg");
+
         productDao.save(product);
+
         assertEquals(productDao.getProduct(32L), product);
     }
 
     @Test
     public void testFindProductsByQuery() {
         String query = "Sam";
+
         List<Product> productsByQuery = productDao.findProductsByQuery(query);
+
         assertFalse(productsByQuery.isEmpty());
+    }
+
+    @Test
+    public void testArrayListProductDaoIsSingleton() {
+        ProductDao productDaoFirst = ArrayListProductDao.getInstance();
+        ProductDao productDaoSecond = ArrayListProductDao.getInstance();
+
+        assertEquals(productDaoFirst, productDaoSecond);
+    }
+
+    @Test
+    public void testProductGetByCode() {
+        String code = "iphone";
+
+        Product iPhone = productDao.getProduct(code);
+
+        assertEquals(code, iPhone.getCode());
     }
 }

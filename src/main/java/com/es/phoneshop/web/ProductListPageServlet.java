@@ -30,9 +30,9 @@ public class ProductListPageServlet extends HttpServlet {
         if (sortField == null && sortOrder == null) {
             request.setAttribute("products", productDao.findProductsByQuery(query));
         } else {
-            request.setAttribute("products", productDao.findProductsByQuerySortFieldAndOrder(query
-                    , SortField.getSortFieldByRequestParam(sortField)
-                    , SortOrder.getSortOrderByRequestParam(sortOrder)));
+            request.setAttribute("products", productDao.findProductsByQuerySortFieldAndOrder(query,
+                    SortField.getSortFieldByRequestParam(sortField),
+                    SortOrder.getSortOrderByRequestParam(sortOrder)));
         }
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }

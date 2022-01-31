@@ -15,7 +15,7 @@ public class SortComparator {
             }
         });
         if (SortOrder.DESC == sortOrder) {
-            productComparator = productComparator.thenComparing(productComparator).reversed();
+            productComparator = productComparator.reversed();
         }
         return productComparator;
     }
