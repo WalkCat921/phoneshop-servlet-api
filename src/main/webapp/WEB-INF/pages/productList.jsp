@@ -2,18 +2,29 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
-
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
 <tags:master pageTitle="Product List">
   <p>
     Welcome to Expert-Soft training!
   </p>
+  <form>
+    <input name="query" value="${param.query}">
+    <button>Search</button>
+  </form>
   <table>
     <thead>
       <tr>
         <td>Image</td>
-        <td>Description</td>
-        <td class="price">Price</td>
+        <td>
+          Description
+          <tags:sortLink sort="description" order="asc" cursor="&uArr;"/>
+          <tags:sortLink sort="description" order="desc" cursor="&dArr;"/>
+        </td>
+        <td class="price">
+            Price
+          <tags:sortLink sort="price" order="asc" cursor="&uArr;"/>
+          <tags:sortLink sort="price" order="desc" cursor="&dArr;"/>
+        </td>
       </tr>
     </thead>
     <c:forEach var="product" items="${products}">
@@ -21,9 +32,17 @@
         <td>
           <img class="product-tile" src="${product.imageUrl}">
         </td>
-        <td>${product.description}</td>
+        <td>
+          <a href="${pageContext.servletContext.contextPath}/product/${product.code}">
+            ${product.description}
+          </a>
+        </td>
         <td class="price">
-          <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+          <a href='#'
+             onclick='javascript:window.open("${pageContext.servletContext.contextPath}/price-history/${product.code}",
+              "_blank", "scrollbars=0,resizable=0,height=600,width=450,top=250,left=780");' title='Pop Up'>
+              <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+          </a>
         </td>
       </tr>
     </c:forEach>
