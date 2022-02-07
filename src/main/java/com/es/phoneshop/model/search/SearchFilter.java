@@ -11,8 +11,9 @@ import java.util.stream.Collectors;
 
 public class SearchFilter {
 
+    private static final Object LOCK = new Object();
+
     public static List<Product> getFilteredListByQuery(List<Product> products, String query) throws NullPointerException {
-        final Object LOCK = new Object();
         synchronized (LOCK) {
             if (query == null || products == null) {
                 throw new NullPointerException();

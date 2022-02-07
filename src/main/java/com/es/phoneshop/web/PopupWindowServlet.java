@@ -1,8 +1,8 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.ProductDao;
-import com.es.phoneshop.model.product.price.PriceHistory;
+import com.es.phoneshop.dao.product.ArrayListProductDao;
+import com.es.phoneshop.dao.product.ProductDao;
+import com.es.phoneshop.model.price.PriceHistory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -13,9 +13,9 @@ import java.io.IOException;
 
 public class PopupWindowServlet extends HttpServlet {
 
-    private final String PRICE_HISTORY_ATTRIBUTE = "priceHistory";
-    private final String PRODUCT_ATTRIBUTE = "product";
-    private final String JSP_PATH = "/WEB-INF/pages/priceHistoryPopup.jsp";
+    private static final String PRICE_HISTORY_ATTRIBUTE = "priceHistory";
+    private static final String PRODUCT_ATTRIBUTE = "product";
+    private static final String JSP_PATH = "/WEB-INF/pages/priceHistoryPopup.jsp";
 
     private ProductDao productDao;
 

@@ -1,5 +1,7 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.dao.product.ArrayListProductDao;
+import com.es.phoneshop.dao.product.ProductDao;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,11 +44,11 @@ public class ArrayListProductDaoTest {
     @Test
     public void testGetProductsEquals() {
         final long ID = 9L;
-        final String PRODUCT_CODE = "nokia3310";
+        final String nokia3310Code = "nokia3310";
 
         Product product = productDao.getProduct(ID);
 
-        assertEquals(PRODUCT_CODE, product.getCode());
+        assertEquals(nokia3310Code, product.getCode());
     }
 
     @Test
@@ -98,9 +100,9 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProductsByQuery() {
-        final String QUERY = "Sam";
+        final String query = "Sam";
 
-        List<Product> productsByQuery = productDao.findProductsByQuery(QUERY);
+        List<Product> productsByQuery = productDao.findProductsByQuery(query);
 
         assertFalse(productsByQuery.isEmpty());
     }
@@ -115,10 +117,10 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testProductGetByCode() {
-        final String PRODUCT_CODE = "iphone";
+        final String iphoneCode = "iphone";
 
-        Product iPhone = productDao.getProduct(PRODUCT_CODE);
+        Product iPhone = productDao.getProduct(iphoneCode);
 
-        assertEquals(PRODUCT_CODE, iPhone.getCode());
+        assertEquals(iphoneCode, iPhone.getCode());
     }
 }

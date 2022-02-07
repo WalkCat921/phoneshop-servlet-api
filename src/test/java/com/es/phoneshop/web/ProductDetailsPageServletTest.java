@@ -1,8 +1,10 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.dao.product.ArrayListProductDao;
+import com.es.phoneshop.dao.product.ProductDao;
 import com.es.phoneshop.model.product.SampleProduct;
+import com.es.phoneshop.service.CartService;
+import com.es.phoneshop.service.RecentlyViewService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +17,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
@@ -28,7 +31,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ProductDetailsPageServletTest {
 
-    private final String mockedPathInfo = "/iphone";
+    private static final String MOCKED_PATH_INFO = "/iphone";
 
     @Mock
     private HttpServletRequest request;
@@ -38,6 +41,8 @@ public class ProductDetailsPageServletTest {
     private RequestDispatcher requestDispatcher;
     @Mock
     private ServletConfig servletConfig;
+    @Mock
+    private HttpSession session;
 
     private ProductDao productDao = ArrayListProductDao.getInstance();
 
@@ -49,7 +54,8 @@ public class ProductDetailsPageServletTest {
         servlet.init(servletConfig);
         SampleProduct.createSampleProductsArrayList(productDao);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
-        when(request.getPathInfo()).thenReturn(mockedPathInfo);
+        when(request.getPathInfo()).thenReturn(MOCKED_PATH_INFO);
+        when(request.getSession()).thenReturn(session);
     }
 
     @Test
@@ -90,5 +96,21 @@ public class ProductDetailsPageServletTest {
         servlet.doGet(request, response);
 
         verify(request, atLeast(1)).getPathInfo();
+    }
+
+    @Test
+    public void givenRequestResponse_WhenDoPost_ThenInvokedSendRedirectOneTime() throws ServletException, IOException {
+
+        servlet.doPost(request, response);
+
+        verify(response, atLeast(1)).sendRedirect(anyString());
+    }
+
+    @Test
+    public void givenRequestResponse_WhenDoGet_ThenInvokedGetSessionMethodAtLeastOneTime() throws ServletException, IOException {
+
+        servlet.doGet(request, response);
+
+        verify(request, atLeast(1)).getSession();
     }
 }

@@ -1,7 +1,7 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.dao.product.ArrayListProductDao;
+import com.es.phoneshop.dao.product.ProductDao;
 import com.es.phoneshop.model.product.SampleProduct;
 
 import javax.servlet.ServletContextEvent;
@@ -9,7 +9,7 @@ import javax.servlet.ServletContextListener;
 
 public class SampleDataServletContextListener implements ServletContextListener {
 
-    private final String INIT_PARAM = "createSampleData";
+    private static final String INIT_PARAM = "createSampleData";
 
     private ProductDao productDao;
 
