@@ -1,8 +1,8 @@
 package com.es.phoneshop.model.search;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.dao.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.dao.product.ProductDao;
 import com.es.phoneshop.model.product.SampleProduct;
 import org.junit.Before;
 import org.junit.Test;

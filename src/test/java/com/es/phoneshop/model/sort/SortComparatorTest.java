@@ -9,8 +9,8 @@ import java.util.Comparator;
 import static org.junit.Assert.assertNotNull;
 
 public class SortComparatorTest {
-    private SortComparator sortComparator;
 
+    private SortComparator sortComparator;
 
     @Before
     public void setUp() {
@@ -18,7 +18,7 @@ public class SortComparatorTest {
     }
 
     @Test
-    public void SortFieldAndSortOrderGetProductComparatorNotNull() {
+    public void sortFieldAndSortOrderGetProductComparatorNotNull() {
         SortField sortField = SortField.DESCRIPTION;
         SortOrder sortOrder = SortOrder.ASC;
 

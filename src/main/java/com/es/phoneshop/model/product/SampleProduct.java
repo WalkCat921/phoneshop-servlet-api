@@ -1,6 +1,7 @@
 package com.es.phoneshop.model.product;
 
-import com.es.phoneshop.model.product.price.PriceHistory;
+import com.es.phoneshop.dao.product.ProductDao;
+import com.es.phoneshop.model.price.PriceHistory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

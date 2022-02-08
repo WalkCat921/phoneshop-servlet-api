@@ -1,5 +1,6 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.dao.product;
 
+import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.search.SearchFilter;
 import com.es.phoneshop.model.sort.SortComparator;
 import com.es.phoneshop.model.sort.SortField;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
 
-    private final Object LOCK = new Object();
+    private static final Object LOCK = new Object();
     private static volatile ProductDao instance;
 
     private List<Product> products;

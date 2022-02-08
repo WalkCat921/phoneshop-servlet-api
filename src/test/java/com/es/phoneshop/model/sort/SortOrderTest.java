@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 public class SortOrderTest {
 
     @Test
-    public void StringSortOrderGetSortOrderByParamEqualsAsc() {
+    public void stringSortOrderGetSortOrderByParamEqualsAsc() {
         String sortStringOrder = "asc";
 
         SortOrder sortOrder = SortOrder.getSortOrderByRequestParam(sortStringOrder);
@@ -16,7 +16,7 @@ public class SortOrderTest {
     }
 
     @Test
-    public void StringSortOrderGetSortOrderByParamEqualsDesc() {
+    public void stringSortOrderGetSortOrderByParamEqualsDesc() {
         String sortStringOrder = "DeSC";
 
         SortOrder sortOrder = SortOrder.getSortOrderByRequestParam(sortStringOrder);

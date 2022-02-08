@@ -1,9 +1,11 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.dao.product.ArrayListProductDao;
+import com.es.phoneshop.dao.product.ProductDao;
 import com.es.phoneshop.model.sort.SortField;
 import com.es.phoneshop.model.sort.SortOrder;
+import com.es.phoneshop.service.RecentlyViewService;
+import com.es.phoneshop.service.impl.RecentlyViewServiceImpl;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -14,18 +16,21 @@ import java.io.IOException;
 
 public class ProductListPageServlet extends HttpServlet {
 
-    private final String QUERY_PARAM = "query";
-    private final String SORT_FIELD_PARAM = "sort";
-    private final String SORT_ORDER_PARAM = "order";
-    private final String PRODUCTS_ATTRIBUTE = "products";
-    private final String JSP_PATH = "/WEB-INF/pages/productList.jsp";
+    private static final String QUERY_PARAM = "query";
+    private static final String SORT_FIELD_PARAM = "sort";
+    private static final String SORT_ORDER_PARAM = "order";
+    private static final String RECENTLY_VIEW_ATTRIBUTE = "recentlyView";
+    private static final String PRODUCTS_ATTRIBUTE = "products";
+    private static final String JSP_PATH = "/WEB-INF/pages/productList.jsp";
 
     private ProductDao productDao;
+    private RecentlyViewService recentlyViewService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         productDao = ArrayListProductDao.getInstance();
+        recentlyViewService = RecentlyViewServiceImpl.getInstance();
     }
 
     @Override
@@ -40,6 +45,7 @@ public class ProductListPageServlet extends HttpServlet {
                     SortField.getSortFieldByRequestParam(sortField),
                     SortOrder.getSortOrderByRequestParam(sortOrder)));
         }
+        request.setAttribute(RECENTLY_VIEW_ATTRIBUTE, recentlyViewService.getRecentlyViewedProducts(request.getSession()));
         request.getRequestDispatcher(JSP_PATH).forward(request, response);
     }
 

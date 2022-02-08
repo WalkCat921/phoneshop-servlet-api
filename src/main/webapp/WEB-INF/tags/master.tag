@@ -13,6 +13,9 @@
       <img src="${pageContext.servletContext.contextPath}/images/logo.svg"/>
       PhoneShop
     </a>
+    <a href="${pageContext.servletContext.contextPath}/cart">
+      <img class="cart-img" src="${pageContext.servletContext.contextPath}/images/color_cart.png" alt="cart_image">
+    </a>
   </header>
   <main>
     <jsp:doBody/>
