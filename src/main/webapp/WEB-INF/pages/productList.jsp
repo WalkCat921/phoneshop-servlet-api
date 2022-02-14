@@ -8,6 +8,12 @@
     <p>
         Welcome to Expert-Soft training!
     </p>
+    <c:if test="${not empty error}">
+        <p class="error">Error adding to cart</p>
+    </c:if>
+    <c:if test="${not empty param.message}">
+            <p class="success">${param.message}</p>
+    </c:if>
     <form>
         <input name="query" value="${param.query}">
         <button>Search</button>
@@ -21,15 +27,22 @@
                 <tags:sortLink sort="description" order="asc" cursor="&uArr;"/>
                 <tags:sortLink sort="description" order="desc" cursor="&dArr;"/>
             </td>
+            <td>
+                Quantity
+            </td>
             <td class="price">
                 Price
                 <tags:sortLink sort="price" order="asc" cursor="&uArr;"/>
                 <tags:sortLink sort="price" order="desc" cursor="&dArr;"/>
             </td>
+            <td>
+                Add
+            </td>
         </tr>
         </thead>
-        <c:forEach var="product" items="${products}">
+        <c:forEach var="product" items="${products}" varStatus="status">
             <tr>
+                <form method="post" action="${pageContext.servletContext.contextPath}/products">
                 <td>
                     <img class="product-tile" src="${product.imageUrl}">
                 </td>
@@ -37,6 +50,16 @@
                     <a href="${pageContext.servletContext.contextPath}/products/${product.code}">
                             ${product.description}
                     </a>
+                </td>
+                <td>
+                    <input class="quantity" type="text" name="quantity" value="${not empty error && product.code == param.productCode ? param.quantity : 1}">
+                    <c:if test="${not empty error && product.code == param.productCode}">
+                        <p class="error">
+                                ${error}
+                        </p>
+                    </c:if>
+                    <input type="hidden" name="productCode" value="${product.code}">
+                    <input type="hidden" name="query" value="${param.query}">
                 </td>
                 <td class="price">
                     <a href='#'
@@ -46,24 +69,12 @@
                                           currencySymbol="${product.currency.symbol}"/>
                     </a>
                 </td>
+                <td>
+                    <button>Add to cart</button>
+                </td>
+                </form>
             </tr>
         </c:forEach>
     </table>
-    <h1>Recently viewed products:</h1>
-    <table>
-        <tr id="recently-viewed-table">
-            <c:forEach var="productViewed" items="${recentlyView}">
-                <td>
-                    <img class="product-tile" src="${productViewed.imageUrl}" alt="product_img">
-                    <br>
-                    <a href="${pageContext.servletContext.contextPath}/products/${productViewed.code}">
-                            ${productViewed.description}
-                    </a>
-                    <br>
-                    <fmt:formatNumber value="${productViewed.price}" type="currency"
-                                      currencySymbol="${productViewed.currency.symbol}"/>
-                </td>
-            </c:forEach>
-        </tr>
-    </table>
+    <tags:recentlyView recentlyView="${recentlyView}"/>
 </tags:master>

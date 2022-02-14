@@ -15,7 +15,7 @@ public class PopupWindowServlet extends HttpServlet {
 
     private static final String PRICE_HISTORY_ATTRIBUTE = "priceHistory";
     private static final String PRODUCT_ATTRIBUTE = "product";
-    private static final String JSP_PATH = "/WEB-INF/pages/priceHistoryPopup.jsp";
+    private static final String POPUP_JSP_PATH = "/WEB-INF/pages/priceHistoryPopup.jsp";
 
     private ProductDao productDao;
 
@@ -31,7 +31,6 @@ public class PopupWindowServlet extends HttpServlet {
         PriceHistory priceHistory = productDao.getProduct(code).getPriceHistory();
         request.setAttribute(PRICE_HISTORY_ATTRIBUTE, priceHistory);
         request.setAttribute(PRODUCT_ATTRIBUTE, productDao.getProduct(code));
-        request.getRequestDispatcher(JSP_PATH).forward(request, response);
+        request.getRequestDispatcher(POPUP_JSP_PATH).forward(request, response);
     }
-
 }

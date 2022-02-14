@@ -5,6 +5,7 @@ import com.es.phoneshop.model.search.SearchFilter;
 import com.es.phoneshop.model.sort.SortComparator;
 import com.es.phoneshop.model.sort.SortField;
 import com.es.phoneshop.model.sort.SortOrder;
+import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +36,8 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public Product getProduct(Long id) throws NoSuchElementException, NullPointerException {
+    public Product getProduct(@NonNull Long id) throws NoSuchElementException, NullPointerException {
         synchronized (LOCK) {
-            if (id == null) {
-                throw new NullPointerException("id is null!");
-            }
             return products.stream()
                     .filter(product -> id.equals(product.getId()))
                     .findAny()
@@ -48,11 +46,8 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public Product getProduct(String code) throws NoSuchElementException, NullPointerException {
+    public Product getProduct(@NonNull String code) throws NoSuchElementException, NullPointerException {
         synchronized (LOCK) {
-            if (code == null || code.isEmpty()) {
-                throw new NullPointerException("Code is null or empty");
-            }
             return products.stream()
                     .filter(product -> code.equals(product.getCode()))
                     .findAny()
@@ -92,11 +87,8 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void save(Product product) throws NullPointerException {
+    public void save(@NonNull Product product) throws NullPointerException {
         synchronized (LOCK) {
-            if (product == null) {
-                throw new NullPointerException("Product is null");
-            }
             if (product.getId() != null) {
                 try {
                     Product productWithSameId = getProduct(product.getId());

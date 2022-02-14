@@ -1,6 +1,7 @@
 package com.es.phoneshop.model.search;
 
 import com.es.phoneshop.model.product.Product;
+import lombok.NonNull;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -13,11 +14,8 @@ public class SearchFilter {
 
     private static final Object LOCK = new Object();
 
-    public static List<Product> getFilteredListByQuery(List<Product> products, String query) throws NullPointerException {
+    public static List<Product> getFilteredListByQuery(@NonNull List<Product> products, String query) throws NullPointerException {
         synchronized (LOCK) {
-            if (query == null || products == null) {
-                throw new NullPointerException();
-            }
             String[] wordOfQuery = query.toLowerCase(Locale.ROOT).split("\\s+");
             Function<Product, Long> countMatchesProductsFunction = product -> Arrays.stream(wordOfQuery)
                     .filter(queryStream -> product.getDescription().toLowerCase(Locale.ROOT).contains(queryStream))

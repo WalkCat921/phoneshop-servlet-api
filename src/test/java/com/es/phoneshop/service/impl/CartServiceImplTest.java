@@ -14,10 +14,13 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.servlet.http.HttpSession;
+import java.util.NoSuchElementException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CartServiceImplTest {
@@ -57,7 +60,7 @@ public class CartServiceImplTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void givenQuantityBelowZero_WhenAddToCart_ThanThrowIllegalArgumentException() throws OutOfStockException {
+    public void givenQuantityBelowZero_WhenAddToCart_ThenThrowIllegalArgumentException() throws OutOfStockException {
         final int quantityBelowZero = -2;
 
         cartService.add(new Cart(), IPHONE_CODE, quantityBelowZero);
@@ -82,7 +85,7 @@ public class CartServiceImplTest {
     }
 
     @Test
-    public void givenProductInfo_WhenAddProduct_ThanReturnNotNull() throws OutOfStockException {
+    public void givenProductInfo_WhenAddProduct_ThenReturnNotNull() throws OutOfStockException {
         final int quantity = 1;
 
         cartService.add(cart, IPHONE_CODE, quantity);
@@ -91,7 +94,7 @@ public class CartServiceImplTest {
     }
 
     @Test
-    public void givenCart_WhenGetCartFromSession_ThanCartNotNull() {
+    public void givenCart_WhenGetCartFromSession_ThenCartNotNull() {
         Cart cart;
 
         cart = cartService.getCart(session);
@@ -99,5 +102,52 @@ public class CartServiceImplTest {
         assertNotNull(cart);
     }
 
+    @Test
+    public void givenCart_WhenUpdate_ThenQuantityChanged() throws OutOfStockException {
+        Cart cart = cartService.getCart(session);
+        final int quantityBeforeUpdate = 1;
+        cartService.add(cart, IPHONE_CODE, quantityBeforeUpdate);
 
+        cartService.update(cart, IPHONE_CODE, 4);
+
+        assertNotEquals(quantityBeforeUpdate, cart.getItemList().get(0).getQuantity());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void givenWrongCart_WhenUpdate_ThenThrowNullPointerException() throws OutOfStockException {
+        Cart wrongCart = null;
+
+        cartService.add(wrongCart, IPHONE_CODE, 1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void givenWrongQuantity_WhenUpdate_ThenThrowIllegalArgumentException() throws OutOfStockException {
+        final int wrongQuantity = -123;
+
+        cartService.add(new Cart(), IPHONE_CODE, wrongQuantity);
+    }
+
+    @Test(expected = OutOfStockException.class)
+    public void givenQuantityMoreThenStock_WhenUpdate_ThenThrowOutOfStockException() throws OutOfStockException {
+        final int quantityMoreStock = 1_000_000;
+
+        cartService.add(new Cart(), IPHONE_CODE, quantityMoreStock);
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void givenWrongProductCode_WhenUpdate_ThenThrowNoSuchElementException() throws OutOfStockException {
+        final String wrongProductCode = "wrong_test";
+
+        cartService.add(new Cart(), wrongProductCode, 1);
+    }
+
+    @Test
+    public void givenCart_WhenDelete_ThenCartIsEmpty() throws OutOfStockException {
+        Cart cart = cartService.getCart(session);
+        cartService.add(cart, IPHONE_CODE, 4);
+
+        cartService.delete(cart, IPHONE_CODE);
+
+        assertTrue(cart.getItemList().isEmpty());
+    }
 }

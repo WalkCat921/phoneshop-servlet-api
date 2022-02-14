@@ -26,8 +26,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PopupWindowServletTest {
 
-    private final String mockedPathInfo = "/iphone";
-
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -37,8 +35,8 @@ public class PopupWindowServletTest {
     @Mock
     private ServletConfig servletConfig;
 
+    private final String mockedPathInfo = "/iphone";
     private PopupWindowServlet servlet = new PopupWindowServlet();
-
     private ProductDao productDao = ArrayListProductDao.getInstance();
 
     @Before
@@ -47,7 +45,6 @@ public class PopupWindowServletTest {
         SampleProduct.createSampleProductsArrayList(productDao);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(request.getPathInfo()).thenReturn(mockedPathInfo);
-
     }
 
     @Test
@@ -84,7 +81,7 @@ public class PopupWindowServletTest {
         servlet.doGet(request, response);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = NoSuchElementException.class)
     public void testTryGetProductWithEmptyPathInfo() throws ServletException, IOException {
         when(request.getPathInfo()).thenReturn("/");
 

@@ -41,7 +41,7 @@ public class RecentlyViewServiceImplTest {
     }
 
     @Test
-    public void givenTwoSingletonRecentlyView_WhenAssertSame_ThanReturnTrue() {
+    public void givenTwoSingletonRecentlyView_WhenAssertSame_ThenReturnTrue() {
         RecentlyViewService recentlyViewServiceFirst = RecentlyViewServiceImpl.getInstance();
         RecentlyViewService recentlyViewServiceSecond = RecentlyViewServiceImpl.getInstance();
 

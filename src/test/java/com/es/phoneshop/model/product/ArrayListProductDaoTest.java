@@ -5,7 +5,10 @@ import com.es.phoneshop.dao.product.ProductDao;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
+import java.net.SocketException;
+import java.text.ParseException;
 import java.util.Currency;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -122,5 +125,16 @@ public class ArrayListProductDaoTest {
         Product iPhone = productDao.getProduct(iphoneCode);
 
         assertEquals(iphoneCode, iPhone.getCode());
+    }
+
+    @Test
+    public void test(){
+        SocketException e = new SocketException();
+        if (e.getClass() == SocketException.class){
+            System.out.println("Something");
+        }
+        if (e instanceof Exception){
+            System.out.println("sa");
+        }
     }
 }
