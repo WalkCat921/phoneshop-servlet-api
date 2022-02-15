@@ -65,4 +65,5 @@
             </tr>
         </table>
     </form>
+    <tags:recentlyView recentlyView="${recentlyView}"/>
 </tags:master>

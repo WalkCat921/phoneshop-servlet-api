@@ -41,7 +41,13 @@ footer {
     text-align: center;
 }
 
-#details {
+.button-update {
+    font-weight: bold;
+    text-align: center;
+    margin-left: 41%;
+}
+
+#details, .details {
     margin-left: auto;
     margin-right: auto;
 }
@@ -80,6 +86,10 @@ td {
     margin-right: 50px;
 }
 
+.cart-img:hover + .mini-cart {
+    visibility: visible;
+}
+
 img.product-tile {
     max-width: 64px;
 }
@@ -88,4 +98,12 @@ img.product-tile {
 body.product-list {
 
 }
+
+.mini-cart {
+    float: right;
+    margin-left: 5px;
+    font-size: 25px;
+    visibility: hidden;
+}
+
 

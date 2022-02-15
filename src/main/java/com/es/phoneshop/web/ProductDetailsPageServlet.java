@@ -25,7 +25,8 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private static final String PRODUCT_ATTRIBUTE = "product";
     private static final String QUANTITY_PARAM = "quantity";
     private static final String CART_ATTRIBUTE = "cart";
-    private static final String JSP_PATH = "/WEB-INF/pages/productDetails.jsp";
+    private static final String RECENTLY_VIEW_ATTRIBUTE = "recentlyView";
+    private static final String PRODUCT_DETAILS_JSP_PATH = "/WEB-INF/pages/productDetails.jsp";
 
     private ProductDao productDao;
     private CartService cartService;
@@ -46,7 +47,9 @@ public class ProductDetailsPageServlet extends HttpServlet {
         request.setAttribute(CART_ATTRIBUTE, cartService.getCart(request.getSession()));
         List<Product> recentlyViewedList = recentlyViewService.getRecentlyViewedProducts(request.getSession());
         recentlyViewService.add(recentlyViewedList, productDao.getProduct(productCode));
-        request.getRequestDispatcher(JSP_PATH).forward(request, response);
+        request.setAttribute(RECENTLY_VIEW_ATTRIBUTE,
+                recentlyViewService.getRecentlyViewedProducts(request.getSession()));
+        request.getRequestDispatcher(PRODUCT_DETAILS_JSP_PATH).forward(request, response);
     }
 
     @Override

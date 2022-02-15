@@ -14,7 +14,8 @@
       PhoneShop
     </a>
     <a href="${pageContext.servletContext.contextPath}/cart">
-      <img class="cart-img" src="${pageContext.servletContext.contextPath}/images/color_cart.png" alt="cart_image">
+      <img class="cart-img" src="${pageContext.servletContext.contextPath}/images/color_cart.png" alt="cart_image"/>
+        <p class="mini-cart"><jsp:include page="/cart/miniCart"/></p>
     </a>
   </header>
   <main>

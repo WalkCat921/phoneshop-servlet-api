@@ -2,6 +2,7 @@ package com.es.phoneshop.model.product;
 
 import com.es.phoneshop.dao.product.ProductDao;
 import com.es.phoneshop.model.price.PriceHistory;
+import lombok.NonNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -26,10 +27,7 @@ public final class SampleProduct {
         return localDates;
     }
 
-    private static List<BigDecimal> createPriceList(BigDecimal productPrice) throws NullPointerException {
-        if (productPrice == null) {
-            throw new NullPointerException("Product price is null");
-        }
+    private static List<BigDecimal> createPriceList(@NonNull BigDecimal productPrice) throws NullPointerException {
         return Stream.iterate(productPrice, price -> {
             BigDecimal min = new BigDecimal(String.valueOf(price.divide(BigDecimal.valueOf(2))));
             BigDecimal max = min.add(new BigDecimal(String.valueOf(min.multiply(BigDecimal.valueOf(2)))));
