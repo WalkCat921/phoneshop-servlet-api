@@ -1,7 +1,7 @@
 package com.es.phoneshop.service.impl;
 
-import com.es.phoneshop.dao.product.ArrayListProductDao;
-import com.es.phoneshop.dao.product.ProductDao;
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartItem;
@@ -26,6 +26,8 @@ import static org.junit.Assert.assertTrue;
 public class CartServiceImplTest {
 
     private static final String IPHONE_CODE = "iphone";
+    private static final String NOKIA_CODE = "nokia3310";
+    private static final String SAMSUNG_CODE = "sgs";
 
     @Mock
     private HttpSession session;
@@ -43,20 +45,20 @@ public class CartServiceImplTest {
 
     }
 
-
     @Test
     public void givenTwoSingletonsCartService_WhenAssertSame_ThenReturnTrue() {
         CartService cartServiceFirst = CartServiceImpl.getInstance();
         CartService cartServiceSecond = CartServiceImpl.getInstance();
 
-        assertSame(cartServiceFirst, cartServiceFirst);
+        assertSame(cartServiceFirst, cartServiceSecond);
     }
 
     @Test(expected = NullPointerException.class)
     public void givenNullCart_WhenAddInNullCart_ThenThrowNullPointerException() throws OutOfStockException {
         Cart cart = null;
+        final int quantity = 1;
 
-        cartService.add(cart, IPHONE_CODE, 1);
+        cartService.add(cart, IPHONE_CODE, quantity);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -75,22 +77,26 @@ public class CartServiceImplTest {
 
     @Test
     public void givenProductInfo_WhenAddProduct_ThenSumQuantity() throws OutOfStockException {
-        final int quantity = 1;
+        final int firstQuantity = 2;
+        final int secondQuantity = 1;
+        final int index = 0;
+        final int expectedQuantity = 3;
 
-        cart.getItemList().add(new CartItem(productDao.getProduct(IPHONE_CODE), 2));
-        cartService.add(cart, IPHONE_CODE, quantity);
+        cart.getItemList().add(new CartItem(productDao.getByCode(IPHONE_CODE), firstQuantity));
+        cartService.add(cart, IPHONE_CODE, secondQuantity);
 
-        assertEquals(3, cart.getItemList().get(0).getQuantity());
+        assertEquals(expectedQuantity, cart.getItemList().get(index).getQuantity());
 
     }
 
     @Test
     public void givenProductInfo_WhenAddProduct_ThenReturnNotNull() throws OutOfStockException {
         final int quantity = 1;
+        final int index = 0;
 
         cartService.add(cart, IPHONE_CODE, quantity);
 
-        assertNotNull(cart.getItemList().get(0));
+        assertNotNull(cart.getItemList().get(index));
     }
 
     @Test
@@ -106,9 +112,10 @@ public class CartServiceImplTest {
     public void givenCart_WhenUpdate_ThenQuantityChanged() throws OutOfStockException {
         Cart cart = cartService.getCart(session);
         final int quantityBeforeUpdate = 1;
+        final int quantity = 4;
         cartService.add(cart, IPHONE_CODE, quantityBeforeUpdate);
 
-        cartService.update(cart, IPHONE_CODE, 4);
+        cartService.update(cart, IPHONE_CODE, quantity);
 
         assertNotEquals(quantityBeforeUpdate, cart.getItemList().get(0).getQuantity());
     }
@@ -116,8 +123,9 @@ public class CartServiceImplTest {
     @Test(expected = NullPointerException.class)
     public void givenWrongCart_WhenUpdate_ThenThrowNullPointerException() throws OutOfStockException {
         Cart wrongCart = null;
+        final int quantity = 1;
 
-        cartService.add(wrongCart, IPHONE_CODE, 1);
+        cartService.add(wrongCart, IPHONE_CODE, quantity);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -137,16 +145,31 @@ public class CartServiceImplTest {
     @Test(expected = NoSuchElementException.class)
     public void givenWrongProductCode_WhenUpdate_ThenThrowNoSuchElementException() throws OutOfStockException {
         final String wrongProductCode = "wrong_test";
+        final int quantity = 1;
 
-        cartService.add(new Cart(), wrongProductCode, 1);
+        cartService.add(new Cart(), wrongProductCode, quantity);
     }
 
     @Test
     public void givenCart_WhenDelete_ThenCartIsEmpty() throws OutOfStockException {
+        final int quantity = 4;
         Cart cart = cartService.getCart(session);
-        cartService.add(cart, IPHONE_CODE, 4);
+        cartService.add(cart, IPHONE_CODE, quantity);
 
         cartService.delete(cart, IPHONE_CODE);
+
+        assertTrue(cart.getItemList().isEmpty());
+    }
+
+    @Test
+    public void givenCart_WhenClear_ThenCartItemListIsEmpty() throws OutOfStockException {
+        final int quantity = 5;
+        Cart cart = cartService.getCart(session);
+        cartService.add(cart, IPHONE_CODE, quantity);
+        cartService.add(cart, NOKIA_CODE, quantity);
+        cartService.add(cart, SAMSUNG_CODE, quantity);
+
+        cartService.clear(cart);
 
         assertTrue(cart.getItemList().isEmpty());
     }

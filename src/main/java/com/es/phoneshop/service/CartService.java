@@ -13,4 +13,6 @@ public interface CartService {
     void update(Cart cart, String productCode, int quantity) throws OutOfStockException, IllegalArgumentException, NullPointerException;
 
     void delete(Cart cart, String productCode);
+
+    void clear(Cart cart);
 }

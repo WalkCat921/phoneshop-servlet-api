@@ -1,7 +1,7 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.dao.product.ArrayListProductDao;
-import com.es.phoneshop.dao.product.ProductDao;
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.sort.SortField;
@@ -30,6 +30,8 @@ public class ProductListPageServlet extends HttpServlet {
     private static final String PRODUCT_CODE_PARAM = "productCode";
     private static final String ERROR_ATTRIBUTE = "error";
     private static final String QUANTITY_PARAM = "quantity";
+    private static final String CACHE_HEADER = "Cache-Control";
+    private static final String CACHE_HEADER_PARAMETERS = "no-cache, no-store, must-revalidate";
     private static final String PRODUCT_LIST_JSP_PATH = "/WEB-INF/pages/productList.jsp";
 
     private ProductDao productDao;
@@ -58,6 +60,7 @@ public class ProductListPageServlet extends HttpServlet {
         }
         request.setAttribute(RECENTLY_VIEW_ATTRIBUTE,
                 recentlyViewService.getRecentlyViewedProducts(request.getSession()));
+        response.setHeader(CACHE_HEADER, CACHE_HEADER_PARAMETERS);
         request.getRequestDispatcher(PRODUCT_LIST_JSP_PATH).forward(request, response);
     }
 
@@ -88,7 +91,6 @@ public class ProductListPageServlet extends HttpServlet {
         NumberFormat format = NumberFormat.getInstance(request.getLocale());
         return format.parse(quantityString).intValue();
     }
-
 
     private String getMessageException(Exception e) {
         if (e.getClass() == ParseException.class) {

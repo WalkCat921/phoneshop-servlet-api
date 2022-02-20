@@ -1,7 +1,7 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.dao.product.ArrayListProductDao;
-import com.es.phoneshop.dao.product.ProductDao;
+import com.es.phoneshop.dao.impl.ArrayListProductDao;
+import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.model.product.SampleProduct;
 
 import javax.servlet.ServletContextEvent;
@@ -19,7 +19,7 @@ public class SampleDataServletContextListener implements ServletContextListener 
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
-        if (Boolean.valueOf(event.getServletContext().getInitParameter(INIT_PARAM))) {
+        if (Boolean.parseBoolean(event.getServletContext().getInitParameter(INIT_PARAM))) {
             SampleProduct.createSampleProductsArrayList(productDao);
         }
     }
