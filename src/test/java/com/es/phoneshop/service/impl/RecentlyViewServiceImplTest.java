@@ -1,7 +1,7 @@
 package com.es.phoneshop.service.impl;
 
-import com.es.phoneshop.dao.product.ArrayListProductDao;
-import com.es.phoneshop.dao.product.ProductDao;
+import com.es.phoneshop.dao.impl.ArrayListProductDao;
+import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.SampleProduct;
 import com.es.phoneshop.service.RecentlyViewService;
@@ -59,7 +59,7 @@ public class RecentlyViewServiceImplTest {
 
     @Test
     public void givenProduct_WhenAddProducts_ThenReturnTrueIfLastAdded() {
-        Product nokia = productDao.getProduct(NOKIA_3310_CODE);
+        Product nokia = productDao.getByCode(NOKIA_3310_CODE);
         fillRecentlyViewedList();
 
         recentlyViewService.add(recentlyViewed, nokia);
@@ -69,7 +69,7 @@ public class RecentlyViewServiceImplTest {
 
     @Test
     public void givenProduct_WhenAdd_ThenListNotNull() {
-        Product iphone = productDao.getProduct(IPHONE_CODE);
+        Product iphone = productDao.getByCode(IPHONE_CODE);
 
         recentlyViewService.add(recentlyViewed, iphone);
 
@@ -78,7 +78,7 @@ public class RecentlyViewServiceImplTest {
 
     @Test
     public void givenProduct_WhenAddProduct_ThenIfProductInListNoAdd() {
-        Product iphone = productDao.getProduct(IPHONE_CODE);
+        Product iphone = productDao.getByCode(IPHONE_CODE);
         fillRecentlyViewedList();
 
         recentlyViewService.add(recentlyViewed, iphone);
@@ -90,9 +90,9 @@ public class RecentlyViewServiceImplTest {
     }
 
     private void fillRecentlyViewedList() {
-        Product iphone = productDao.getProduct(IPHONE_CODE);
-        Product samsung = productDao.getProduct(SAMSUNG_S_CODE);
-        Product nokia = productDao.getProduct(NOKIA_3310_CODE);
+        Product iphone = productDao.getByCode(IPHONE_CODE);
+        Product samsung = productDao.getByCode(SAMSUNG_S_CODE);
+        Product nokia = productDao.getByCode(NOKIA_3310_CODE);
         recentlyViewService.add(recentlyViewed, iphone);
         recentlyViewService.add(recentlyViewed, samsung);
         recentlyViewService.add(recentlyViewed, nokia);

@@ -1,14 +1,16 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.dao.impl;
 
-import com.es.phoneshop.dao.product.ArrayListProductDao;
-import com.es.phoneshop.dao.product.ProductDao;
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.model.cart.CartItem;
+import com.es.phoneshop.model.order.Order;
+import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.product.SampleProduct;
+import com.es.phoneshop.service.OrderService;
+import com.es.phoneshop.service.impl.OrderServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
 import java.math.BigDecimal;
-import java.net.SocketException;
-import java.text.ParseException;
 import java.util.Currency;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -22,26 +24,27 @@ import static org.junit.Assert.assertSame;
 
 public class ArrayListProductDaoTest {
     private ProductDao productDao;
+    private OrderService orderService;
     private Currency usd;
-
 
     @Before
     public void setup() {
         usd = Currency.getInstance("USD");
         productDao = ArrayListProductDao.getInstance();
+        orderService = OrderServiceImpl.getInstance();
         SampleProduct.createSampleProductsArrayList(productDao);
     }
 
     @Test
     public void testFindProductsHaveResults() {
-        assertFalse(productDao.findProducts().isEmpty());
+        assertFalse(productDao.findAll().isEmpty());
     }
 
     @Test
     public void testGetProductNotNull() {
         final long ID = 4L;
 
-        assertNotNull(productDao.getProduct(ID));
+        assertNotNull(productDao.get(ID));
     }
 
     @Test
@@ -49,7 +52,7 @@ public class ArrayListProductDaoTest {
         final long ID = 9L;
         final String nokia3310Code = "nokia3310";
 
-        Product product = productDao.getProduct(ID);
+        Product product = productDao.get(ID);
 
         assertEquals(nokia3310Code, product.getCode());
     }
@@ -73,7 +76,7 @@ public class ArrayListProductDaoTest {
 
         productDao.save(newProductWithSameId);
 
-        assertNotEquals(productFromList, productDao.getProduct(12L));
+        assertNotEquals(productFromList, productDao.get(12L));
     }
 
     @Test(expected = NoSuchElementException.class)
@@ -82,7 +85,7 @@ public class ArrayListProductDaoTest {
 
         productDao.delete(ID);
 
-        assertNull(productDao.getProduct(ID));
+        assertNull(productDao.get(ID));
     }
 
     @Test
@@ -98,7 +101,7 @@ public class ArrayListProductDaoTest {
 
         productDao.save(product);
 
-        assertEquals(productDao.getProduct(32L), product);
+        assertEquals(productDao.get(32L), product);
     }
 
     @Test
@@ -122,19 +125,24 @@ public class ArrayListProductDaoTest {
     public void testProductGetByCode() {
         final String iphoneCode = "iphone";
 
-        Product iPhone = productDao.getProduct(iphoneCode);
+        Product iPhone = productDao.getByCode(iphoneCode);
 
         assertEquals(iphoneCode, iPhone.getCode());
     }
 
     @Test
-    public void test(){
-        SocketException e = new SocketException();
-        if (e.getClass() == SocketException.class){
-            System.out.println("Something");
-        }
-        if (e instanceof Exception){
-            System.out.println("sa");
-        }
+    public void testUpdateStockAfterPlaceOrder() {
+        final int quantity = 5;
+        final int expectedQuantity = 5;
+        final Long id = 4L;
+        Product productFromList = productDao.get(id);
+        Order order = new Order();
+
+        CartItem cartItem = new CartItem(productFromList, quantity);
+        order.getItemList().add(cartItem);
+        orderService.placeOrder(order);
+        productDao.updateStock(order);
+
+        assertEquals(expectedQuantity, productDao.get(id).getStock());
     }
 }

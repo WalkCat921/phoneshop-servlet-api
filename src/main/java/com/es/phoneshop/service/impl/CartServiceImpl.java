@@ -1,7 +1,7 @@
 package com.es.phoneshop.service.impl;
 
-import com.es.phoneshop.dao.product.ArrayListProductDao;
-import com.es.phoneshop.dao.product.ProductDao;
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartItem;
@@ -52,7 +52,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public void add(@NonNull Cart cart, String productCode, int quantity) throws OutOfStockException, IllegalArgumentException, NullPointerException {
         synchronized (LOCK) {
-            Product product = productDao.getProduct(productCode);
+            Product product = productDao.getByCode(productCode);
             if (quantity <= 0) {
                 throw new IllegalArgumentException("Quantity must be more than 0");
             } else if (product.getStock() < quantity) {
@@ -78,7 +78,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public void update(@NonNull Cart cart, String productCode, int quantity) throws OutOfStockException, IllegalArgumentException, NullPointerException {
         synchronized (LOCK) {
-            Product product = productDao.getProduct(productCode);
+            Product product = productDao.getByCode(productCode);
             if (quantity <= 0) {
                 throw new IllegalArgumentException("Quantity must be more Then 0");
             } else if (product.getStock() < quantity) {
@@ -86,15 +86,11 @@ public class CartServiceImpl implements CartService {
             } else {
                 CartItem cartItemWithSameCode = getCartItemByProductCode(cart, productCode);
                 int index = cart.getItemList().indexOf(cartItemWithSameCode);
-                if (quantity > product.getStock()) {
-                    throw new OutOfStockException(product.getStock());
-                } else {
-                    cartItemWithSameCode.setQuantity(quantity);
-                    cart.getItemList().set(index, cartItemWithSameCode);
-                }
+                cartItemWithSameCode.setQuantity(quantity);
+                cart.getItemList().set(index, cartItemWithSameCode);
             }
-            recalculateCart(cart);
         }
+        recalculateCart(cart);
     }
 
     @Override
@@ -105,11 +101,21 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    @Override
+    public void clear(Cart cart) {
+        synchronized (LOCK) {
+            cart.getItemList().clear();
+            recalculateCart(cart);
+        }
+    }
+
     private CartItem getCartItemByProductCode(@NonNull Cart cart, String productCode) throws NullPointerException {
-        return cart.getItemList().stream()
-                .filter(cartItem -> cartItem.getProduct().getCode().equals(productCode))
-                .findAny()
-                .get();
+        synchronized (LOCK) {
+            return cart.getItemList().stream()
+                    .filter(cartItem -> cartItem.getProduct().getCode().equals(productCode))
+                    .findAny()
+                    .get();
+        }
     }
 
     private void recalculateCart(@NonNull Cart cart) throws NullPointerException {

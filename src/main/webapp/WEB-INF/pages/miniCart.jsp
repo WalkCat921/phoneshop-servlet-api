@@ -13,6 +13,6 @@ ${cart.totalQuantity}
         item
     </c:otherwise>
 </c:choose>
-<fmt:formatNumber value="${cart.totalCost}" type="currency" currencySymbol="$"/> cost
+<fmt:formatNumber value="${cart.totalCost}" type="currency" currencySymbol="${cart.currency.symbol}"/> cost
 
 

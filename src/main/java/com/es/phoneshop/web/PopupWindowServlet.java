@@ -1,7 +1,7 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.dao.product.ArrayListProductDao;
-import com.es.phoneshop.dao.product.ProductDao;
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.dao.impl.ArrayListProductDao;
 import com.es.phoneshop.model.price.PriceHistory;
 
 import javax.servlet.ServletConfig;
@@ -28,9 +28,14 @@ public class PopupWindowServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String code = request.getPathInfo().substring(1);
-        PriceHistory priceHistory = productDao.getProduct(code).getPriceHistory();
+        PriceHistory priceHistory = productDao.getByCode(code).getPriceHistory();
         request.setAttribute(PRICE_HISTORY_ATTRIBUTE, priceHistory);
-        request.setAttribute(PRODUCT_ATTRIBUTE, productDao.getProduct(code));
+        request.setAttribute(PRODUCT_ATTRIBUTE, productDao.getByCode(code));
         request.getRequestDispatcher(POPUP_JSP_PATH).forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
     }
 }

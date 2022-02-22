@@ -99,4 +99,16 @@ public class CartPageServletTest {
 
         verify(response, atLeast(1)).sendRedirect(any());
     }
+
+    @Test
+    public void testDoPostsResponseInvokedSendRedirect() throws ServletException, IOException, OutOfStockException {
+        when(cartService.getCart(any())).thenReturn(cart);
+        when(request.getLocale()).thenReturn(Locale.ENGLISH);
+        when(request.getParameterValues("productCode")).thenReturn(new String[]{"sgs", "iphone", "sgs3"});
+        when(request.getParameterValues("quantity")).thenReturn(new String[]{"100000", "200000", "100000"});
+
+        servlet.doPost(request, response);
+
+        verify(response, atLeast(1)).sendRedirect(any());
+    }
 }

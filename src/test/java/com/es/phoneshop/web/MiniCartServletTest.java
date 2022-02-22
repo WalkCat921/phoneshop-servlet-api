@@ -70,4 +70,9 @@ public class MiniCartServletTest {
 
         verify(requestDispatcher, times(1)).include(request, response);
     }
+
+    @Test
+    public void testDoPostMethodInvoked() throws ServletException, IOException {
+        servlet.doPost(request,response);
+    }
 }
