@@ -6,6 +6,7 @@ import com.es.phoneshop.model.cart.CartItem;
 import com.es.phoneshop.model.order.Order;
 import com.es.phoneshop.service.CartService;
 import com.es.phoneshop.service.OrderService;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,17 +61,16 @@ public class CheckoutPageServletTest {
     @InjectMocks
     CheckoutPageServlet servlet = new CheckoutPageServlet();
 
-    private static final String ERROR_ATTRIBUTE = "errors";
     private static final String FIRST_NAME_PARAM = "firstName";
     private static final String LAST_NAME_PARAM = "lastName";
     private static final String PHONE_PARAM = "phone";
     private static final String DELIVERY_DATE_PARAM = "deliveryDate";
     private static final String DELIVERY_ADDRESS_PARAM = "deliveryAddress";
-    private static final String ORDER_ATTRIBUTE = "order";
     private static final String CACHE_HEADER = "Cache-Control";
     private static final String CACHE_HEADER_PARAMETERS = "no-cache, no-store, must-revalidate";
     private static final String PAYMENT_METHOD_PARAM = "paymentMethod";
-    private static final String CONTEXT_PATH = "products";
+    private static final String CONTEXT_PATH_PRODUCTS = "products";
+    private static final String CONTEXT_PATH_CHECKOUT = "/checkout";
 
     @Before
     public void setUp() throws Exception {
@@ -87,10 +87,11 @@ public class CheckoutPageServletTest {
 
     @Test
     public void testDoPostWithNotEmptyErrors() throws ServletException, IOException {
+        when(request.getContextPath()).thenReturn(StringUtils.EMPTY);
+
         servlet.doPost(request, response);
 
-        verify(request, times(1)).setAttribute(eq(ERROR_ATTRIBUTE), any());
-        verify(request, times(1)).setAttribute(eq(ORDER_ATTRIBUTE), any());
+        verify(response, times(1)).sendRedirect(eq(CONTEXT_PATH_CHECKOUT));
     }
 
     @Test
@@ -127,10 +128,10 @@ public class CheckoutPageServletTest {
 
     @Test
     public void testDoGetSendRedirectIfCartItemListNull() throws ServletException, IOException {
-        when(request.getContextPath()).thenReturn(CONTEXT_PATH);
+        when(request.getContextPath()).thenReturn(CONTEXT_PATH_PRODUCTS);
 
         servlet.doGet(request, response);
 
-        verify(response, times(1)).sendRedirect(eq(CONTEXT_PATH));
+        verify(response, times(1)).sendRedirect(eq(CONTEXT_PATH_PRODUCTS));
     }
 }

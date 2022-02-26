@@ -21,6 +21,7 @@ import java.util.Map;
 
 public class CheckoutPageServlet extends HttpServlet {
 
+    private static final String ERROR_SESSION_ATTRIBUTE = "ErrorSessionCheckoutPage";
     private static final String ERROR_ATTRIBUTE = "errors";
     private static final String FIRST_NAME_PARAM = "firstName";
     private static final String LAST_NAME_PARAM = "lastName";
@@ -52,6 +53,7 @@ public class CheckoutPageServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath());
             return;
         }
+        setAttributeFromSession(request, ERROR_SESSION_ATTRIBUTE, ERROR_ATTRIBUTE);
         request.setAttribute(ORDER_ATTRIBUTE, orderService.getOrder(cart));
         response.setHeader(CACHE_HEADER, CACHE_HEADER_PARAMETERS);
         request.setAttribute(PAYMENT_METHOD_PARAM, orderService.getPaymentMethods());
@@ -82,9 +84,20 @@ public class CheckoutPageServlet extends HttpServlet {
             response.sendRedirect(String.format("%s/order/overview/%s",
                     request.getContextPath(), order.getSecureId()));
         } else {
-            request.setAttribute(ERROR_ATTRIBUTE, errors);
-            request.setAttribute(ORDER_ATTRIBUTE, order);
-            doGet(request, response);
+            setValueInSession(request, ERROR_SESSION_ATTRIBUTE, errors);
+            response.sendRedirect(String.format("%s/checkout", request.getContextPath()));
         }
+    }
+
+    private void setAttributeFromSession(HttpServletRequest request, String sessionAttribute,
+                                         String attribute) {
+        if (request.getSession().getAttribute(sessionAttribute) != null) {
+            request.setAttribute(attribute, request.getSession().getAttribute(sessionAttribute));
+            request.getSession().removeAttribute(sessionAttribute);
+        }
+    }
+
+    private void setValueInSession(HttpServletRequest request, String sessionAttribute, Object object) {
+        request.getSession().setAttribute(sessionAttribute, object);
     }
 }

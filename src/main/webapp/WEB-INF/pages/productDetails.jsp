@@ -52,7 +52,7 @@
             <tr>
                 <td>Quantity</td>
                 <td>
-                    <input name="quantity" value="${not empty error ? param.quantity : 1}" class="quantity">
+                    <input name="quantity" pattern="\d+" value="${not empty error ? param.quantity : 1}" class="quantity">
                     <br>
                     <br>
                     <button>Add to cart</button>

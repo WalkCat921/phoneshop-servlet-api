@@ -10,6 +10,7 @@ import com.es.phoneshop.service.CartService;
 import com.es.phoneshop.service.RecentlyViewService;
 import com.es.phoneshop.service.impl.CartServiceImpl;
 import com.es.phoneshop.service.impl.RecentlyViewServiceImpl;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -19,9 +20,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProductListPageServlet extends HttpServlet {
 
+    private static final String ERROR_SESSION_ATTRIBUTE = "ErrorSessionProductListPage";
+    private static final String QUANTITY_SESSION_ATTRIBUTE = "QuantitySessionProductListPage";
     private static final String QUERY_PARAM = "query";
     private static final String SORT_FIELD_PARAM = "sort";
     private static final String SORT_ORDER_PARAM = "order";
@@ -58,6 +63,8 @@ public class ProductListPageServlet extends HttpServlet {
                     SortField.getSortFieldByRequestParam(sortField),
                     SortOrder.getSortOrderByRequestParam(sortOrder)));
         }
+        setAttributeFromSession(request, ERROR_SESSION_ATTRIBUTE, ERROR_ATTRIBUTE);
+        setAttributeFromSession(request, QUANTITY_SESSION_ATTRIBUTE, QUANTITY_PARAM);
         request.setAttribute(RECENTLY_VIEW_ATTRIBUTE,
                 recentlyViewService.getRecentlyViewedProducts(request.getSession()));
         response.setHeader(CACHE_HEADER, CACHE_HEADER_PARAMETERS);
@@ -70,7 +77,10 @@ public class ProductListPageServlet extends HttpServlet {
         String quantityString = request.getParameter(QUANTITY_PARAM);
         String query = request.getParameter(QUERY_PARAM);
         Cart cart = cartService.getCart(request.getSession());
+        Map<String, String> errors = new HashMap<>();
+        Map<String, String> quantities = new HashMap<>();
         try {
+            quantities.put(code, quantityString);
             cartService.add(cart, code, parseQuantity(quantityString, request));
             if (query.isEmpty()) {
                 response.sendRedirect(String.format("%s/products?message=Added to cart successfully",
@@ -80,16 +90,23 @@ public class ProductListPageServlet extends HttpServlet {
                         request.getContextPath(),
                         query));
             }
+            request.getSession().removeAttribute(ERROR_SESSION_ATTRIBUTE);
+            request.getSession().removeAttribute(QUANTITY_SESSION_ATTRIBUTE);
         } catch (Exception e) {
-            request.setAttribute(ERROR_ATTRIBUTE, getMessageException(e));
-            doGet(request, response);
-            return;
+            errors.put(code, getMessageException(e));
+            setValueInSession(request, ERROR_SESSION_ATTRIBUTE, errors);
+            setValueInSession(request, QUANTITY_SESSION_ATTRIBUTE, quantities);
+            response.sendRedirect(String.format("%s/products", request.getContextPath()));
         }
     }
 
     private int parseQuantity(String quantityString, HttpServletRequest request) throws ParseException {
-        NumberFormat format = NumberFormat.getInstance(request.getLocale());
-        return format.parse(quantityString).intValue();
+        if (NumberUtils.isDigits(quantityString)) {
+            NumberFormat format = NumberFormat.getInstance(request.getLocale());
+            return format.parse(quantityString).intValue();
+        } else {
+            throw new IllegalArgumentException("Not a number");
+        }
     }
 
     private String getMessageException(Exception e) {
@@ -101,5 +118,16 @@ public class ProductListPageServlet extends HttpServlet {
         } else {
             return e.getMessage();
         }
+    }
+
+    private void setAttributeFromSession(HttpServletRequest request, String sessionAttribute,
+                                         String attribute) {
+        if (request.getSession().getAttribute(sessionAttribute) != null) {
+            request.setAttribute(attribute, request.getSession().getAttribute(sessionAttribute));
+        }
+    }
+
+    private void setValueInSession(HttpServletRequest request, String sessionAttribute, Object object) {
+        request.getSession().setAttribute(sessionAttribute, object);
     }
 }
