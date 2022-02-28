@@ -21,7 +21,6 @@ import java.util.Locale;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -45,7 +44,6 @@ public class CartPageServletTest {
     @Mock
     private CartService cartService;
 
-    private static final String ERROR_ATTRIBUTE = "errors";
     private static final String CART_JSP_PATH = "/WEB-INF/pages/cart.jsp";
 
     @InjectMocks
@@ -77,7 +75,7 @@ public class CartPageServletTest {
     }
 
     @Test
-    public void testDoPostRequestInvokedSetAttributeError() throws ServletException, IOException, OutOfStockException {
+    public void testDoPostResponseInvokedRedirectWhenParseErrorOccurred() throws ServletException, IOException, OutOfStockException {
         when(cartService.getCart(any())).thenReturn(cart);
         when(request.getLocale()).thenReturn(Locale.ENGLISH);
         when(request.getParameterValues("productCode")).thenReturn(new String[]{"sgs", "iphone", "sgs3"});
@@ -85,11 +83,11 @@ public class CartPageServletTest {
 
         servlet.doPost(request, response);
 
-        verify(request, atLeast(1)).setAttribute(eq(ERROR_ATTRIBUTE), any());
+        verify(response, atLeast(1)).sendRedirect(anyString());
     }
 
     @Test
-    public void testDoPostResponseInvokedSendRedirect() throws ServletException, IOException, OutOfStockException {
+    public void testDoPostResponseInvokedSendRedirectWhenNoErrors() throws ServletException, IOException, OutOfStockException {
         when(cartService.getCart(any())).thenReturn(cart);
         when(request.getLocale()).thenReturn(Locale.ENGLISH);
         when(request.getParameterValues("productCode")).thenReturn(new String[]{"sgs", "iphone", "sgs3"});
@@ -101,7 +99,7 @@ public class CartPageServletTest {
     }
 
     @Test
-    public void testDoPostsResponseInvokedSendRedirect() throws ServletException, IOException, OutOfStockException {
+    public void testDoPostsResponseInvokedSendRedirectWhenOutOfStockError() throws ServletException, IOException {
         when(cartService.getCart(any())).thenReturn(cart);
         when(request.getLocale()).thenReturn(Locale.ENGLISH);
         when(request.getParameterValues("productCode")).thenReturn(new String[]{"sgs", "iphone", "sgs3"});

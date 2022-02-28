@@ -42,7 +42,7 @@
         </thead>
         <c:forEach var="product" items="${products}" varStatus="status">
             <tr>
-                <form method="post" action="${pageContext.servletContext.contextPath}/products">
+                <form method="post" action="${pageContext.servletContext.contextPath}/products" >
                 <td>
                     <img class="product-tile" src="${product.imageUrl}">
                 </td>
@@ -52,10 +52,10 @@
                     </a>
                 </td>
                 <td>
-                    <input class="quantity" type="text" name="quantity" value="${not empty error && product.code == param.productCode ? param.quantity : 1}">
-                    <c:if test="${not empty error && product.code == param.productCode}">
+                    <input class="quantity" type="text" name="quantity" pattern="\d+" value="${not empty error[product.code]  ? quantity[product.code] : 1}">
+                    <c:if test="${not empty error}">
                         <p class="error">
-                                ${error}
+                                ${error[product.code]}
                         </p>
                     </c:if>
                     <input type="hidden" name="productCode" value="${product.code}">

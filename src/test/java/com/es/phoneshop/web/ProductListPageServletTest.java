@@ -56,7 +56,6 @@ public class ProductListPageServletTest {
     private static final String SORT_FIELD_PARAM = "sort";
     private static final String SORT_ORDER_PARAM = "order";
     private static final String PRODUCT_CODE_PARAM = "productCode";
-    private static final String ERROR_ATTRIBUTE = "error";
     private static final String QUANTITY_PARAM = "quantity";
     private static final String PRODUCTS_ATTRIBUTE = "products";
     private static final String PRODUCT_LIST_JSP_PATH = "/WEB-INF/pages/productList.jsp";
@@ -86,7 +85,7 @@ public class ProductListPageServletTest {
     public void testDоPostCatchException() throws ServletException, IOException {
         servlet.doPost(request, response);
 
-        verify(request, atLeast(1)).setAttribute(eq(ERROR_ATTRIBUTE), any());
+        verify(response, atLeast(1)).sendRedirect(anyString());
     }
 
 

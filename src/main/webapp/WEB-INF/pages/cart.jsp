@@ -20,7 +20,7 @@
     </c:if>
     <c:if test="${empty cart.itemList}">
         <p id="product-description-text">
-            Your cart empty!<a href="${pageContext.servletContext.contextPath}">Add some products?</a>
+            Your cart empty!<a href="/">Add some products?</a>
         </p>
     </c:if>
     <c:if test="${not empty cart.itemList}">
@@ -40,14 +40,16 @@
                         <td><img src="${item.product.imageUrl}" alt="phone_img"></td>
                         <td>${item.product.description}</td>
                         <td>
-                            <fmt:formatNumber value="${item.quantity}" var="quantity"/>
                             <c:set var="error" value="${errors[item.product.code]}"/>
-                            <input class="quantity" type="text" name="quantity"
-                                   value="${not empty error ? paramValues['quantity'][status.index] : item.quantity}">
+                            <input class="quantity" type="text" name="quantity" pattern="\d+"
+                                   value="${not empty error ? quantity[item.product.code] : item.quantity}">
                             <c:if test="${not empty error}">
                                 <div class="error">
                                         ${errors[item.product.code]}
                                 </div>
+                            </c:if>
+                            <c:if test="${empty error}">
+                                <div class="success">Update successfully!</div>
                             </c:if>
                             <input type="hidden" name="productCode" value="${item.product.code}">
                         </td>
