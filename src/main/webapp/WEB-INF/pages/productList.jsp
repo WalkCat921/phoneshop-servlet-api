@@ -18,6 +18,7 @@
         <input name="query" value="${param.query}">
         <button>Search</button>
     </form>
+    <a href="/search">Search with filters</a>
     <table>
         <thead>
         <tr>
