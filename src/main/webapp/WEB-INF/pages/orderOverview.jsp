@@ -45,5 +45,5 @@
         <tags:orderOverviewRow name="deliveryAddress" order="${order}" lable="Delivery address"/>
         <tags:orderOverviewRow name="paymentMethod" order="${order}" lable="Payment method"/>
     </table>
-    <a href="${pageContext.servletContext.contextPath}"><button>Back to  product list</button></a>
+    <a href="/"><button>Back to  product list</button></a>
 </tags:master>

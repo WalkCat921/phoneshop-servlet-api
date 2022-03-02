@@ -18,6 +18,9 @@ public class FormValidator {
     private static final String PAYMENT_METHOD_PARAM = "paymentMethod";
     private static final String MESSAGE_REQUIRED_VALUE = "Value is required";
     private static final String MESSAGE_INCORRECT_VALUE = "Value is incorrect";
+    private static final String MIN_PRICE_PARAM = "minPrice";
+    private static final String MAX_PRICE_PARAM = "maxPrice";
+    private static final String MIN_STOCK_PARAM = "minStock";
     private static final String REGEX_PHONE = "375[0-9]{9}";
     private static final String REGEX_NAME = "[A-Z][a-z]*";
     private static final String REGEX_ADDRESS = "([a-z]{2})+(. )([A-Z][a-z]*)+( )+([0-9]{1,4})(-[0-9]{0,3}|)-[0-9]{1,4}(,| |  |, )[A-Z][a-z]*";
@@ -66,6 +69,18 @@ public class FormValidator {
                     }
             }
             consumer.accept((T) value);
+        }
+    }
+
+    public static <T> void validateSearchForm(String value, String parameter, Map<String, String> errors) {
+        switch (parameter) {
+            case MIN_PRICE_PARAM:
+            case MAX_PRICE_PARAM:
+            case MIN_STOCK_PARAM:
+                if (!StringUtils.isNumeric(value) && !value.isEmpty()) {
+                    errors.put(parameter, MESSAGE_INCORRECT_VALUE);
+                }
+                break;
         }
     }
 

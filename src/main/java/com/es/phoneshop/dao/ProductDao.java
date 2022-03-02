@@ -5,7 +5,9 @@ import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.sort.SortField;
 import com.es.phoneshop.model.sort.SortOrder;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 public interface ProductDao extends DAO<Product> {
