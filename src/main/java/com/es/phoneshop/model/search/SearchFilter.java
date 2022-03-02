@@ -36,20 +36,22 @@ public class SearchFilter {
 
     public static List<Product> getListBySearchFilters(String productCode, int minStock,
                                                        BigDecimal minPrice, BigDecimal maxPrice) {
-        List<Product> products = productDao.findAll();
-        if (productCode != null && !productCode.isEmpty()) {
-            products = findProductsByFilterProductCode(products, productCode);
+        synchronized (LOCK) {
+            List<Product> products = productDao.findAll();
+            if (productCode != null && !productCode.isEmpty()) {
+                products = findProductsByFilterProductCode(products, productCode);
+            }
+            if (minStock >= 0) {
+                products = findProductsByFilterMinStock(products, minStock);
+            }
+            if (minPrice != null) {
+                products = findProductsByFilterMinPrice(products, minPrice);
+            }
+            if (maxPrice != null) {
+                products = findProductsByFilterMaxPrice(products, maxPrice);
+            }
+            return products;
         }
-        if (minStock >= 0) {
-            products = findProductsByFilterMinStock(products, minStock);
-        }
-        if (minPrice != null) {
-            products = findProductsByFilterMinPrice(products, minPrice);
-        }
-        if (maxPrice != null) {
-            products = findProductsByFilterMaxPrice(products, maxPrice);
-        }
-        return products;
     }
 
     private static List<Product> findProductsByFilterMinPrice(List<Product> products, BigDecimal minPrice) {
@@ -72,7 +74,7 @@ public class SearchFilter {
 
     private static List<Product> findProductsByFilterProductCode(List<Product> products, String productCode) {
         return products.stream()
-                .filter(product -> product.getCode().equals(productCode))
+                .filter(product -> product.getCode().contains(productCode))
                 .collect(Collectors.toList());
     }
 
